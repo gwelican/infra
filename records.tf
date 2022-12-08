@@ -60,7 +60,7 @@ resource "cloudflare_record" "gwelican-aspmx1" { # f83b428879016937a3d157295566a
   ttl      = "1"
   type     = "MX"
   value    = "aspmx.l.google.com"
-  zone_id = var.gwelican_zoneid
+  zone_id  = var.gwelican_zoneid
 }
 
 resource "cloudflare_record" "gwelican-aspmx-alt2" { # f83b428879016937a3d157295566a852/6573cd9e6c30eea6c90a957b2fabd954
@@ -70,7 +70,7 @@ resource "cloudflare_record" "gwelican-aspmx-alt2" { # f83b428879016937a3d157295
   ttl      = "1"
   type     = "MX"
   value    = "alt2.aspmx.l.google.com"
-  zone_id = var.gwelican_zoneid
+  zone_id  = var.gwelican_zoneid
 }
 
 resource "cloudflare_record" "gwelican-aspmx-alt1" { # f83b428879016937a3d157295566a852/933f379381b25fc847fe72aebfd0c31e
@@ -80,7 +80,7 @@ resource "cloudflare_record" "gwelican-aspmx-alt1" { # f83b428879016937a3d157295
   ttl      = "1"
   type     = "MX"
   value    = "alt1.aspmx.l.google.com"
-  zone_id = var.gwelican_zoneid
+  zone_id  = var.gwelican_zoneid
 }
 
 resource "cloudflare_record" "gwelican-aspmx2" { # f83b428879016937a3d157295566a852/b50d11fd61fec73e52889efd145371e3
@@ -90,7 +90,7 @@ resource "cloudflare_record" "gwelican-aspmx2" { # f83b428879016937a3d157295566a
   ttl      = "1"
   type     = "MX"
   value    = "aspmx2.googlemail.com"
-  zone_id = var.gwelican_zoneid
+  zone_id  = var.gwelican_zoneid
 }
 
 resource "cloudflare_record" "gwelican-asmx3" { # f83b428879016937a3d157295566a852/38f9f8af341d05c68c49d263a75890c7
@@ -100,7 +100,7 @@ resource "cloudflare_record" "gwelican-asmx3" { # f83b428879016937a3d157295566a8
   ttl      = "1"
   type     = "MX"
   value    = "aspmx3.googlemail.com"
-  zone_id = var.gwelican_zoneid
+  zone_id  = var.gwelican_zoneid
 }
 
 
@@ -111,7 +111,7 @@ resource "cloudflare_record" "gwelican-aspmx4" { # f83b428879016937a3d157295566a
   ttl      = "1"
   type     = "MX"
   value    = "aspmx4.googlemail.com"
-  zone_id = var.gwelican_zoneid
+  zone_id  = var.gwelican_zoneid
 }
 
 resource "cloudflare_record" "gwelican-aspmx5" { # f83b428879016937a3d157295566a852/fb5549e952f09266735728aeabe566fb
@@ -121,7 +121,7 @@ resource "cloudflare_record" "gwelican-aspmx5" { # f83b428879016937a3d157295566a
   ttl      = "1"
   type     = "MX"
   value    = "aspmx5.googlemail.com"
-  zone_id = var.gwelican_zoneid
+  zone_id  = var.gwelican_zoneid
 }
 
 #resource "cloudflare_record" "www-pankapeti-com" { # b74b87c81c203c13fae1bd73e255facb/4c2522ca4607df9c4c6c2ab970f52151

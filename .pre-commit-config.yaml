@@ -1,0 +1,12 @@
+repos:
+- repo: https://github.com/antonbabenko/pre-commit-terraform
+  rev: v1.77.0
+  hooks:
+    - id: terraform_fmt
+    - id: terraform_validate
+#     - id: terraform_tfsec
+    - id: terraform_tflint
+- repo: https://github.com/syntaqx/git-hooks
+  rev: f4a13d3c7b5e5d18dddcddbff7c7ee09db535725
+  hooks:
+    - id: circleci-config-validate
