@@ -43,6 +43,7 @@ jobs:
           key: terraform-{{ .Environment.CIRCLE_SHA1 }}
       - setup_terraform_credentials
       - run:
+          working_directory: terraform
           name: terraform apply
           command: |
             terraform apply -auto-approve
@@ -55,9 +56,8 @@ jobs:
       - tfnotify-install
       - run:
           name: terraform plan and notify
+          working_directory: terraform
           command: |
-            
-            env
             terraform init
             terraform plan | tfnotify plan --title "## Plan result"
       - save_cache:
