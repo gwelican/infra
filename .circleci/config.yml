@@ -2,84 +2,14 @@ version: 2.1
 
 orbs:
   terraform: circleci/terraform@3.2.0
+  path-filtering: circleci/path-filtering@0.1.3
 
-commands:
-  setup_terraform_credentials:
-    steps:
-      - run:
-          name: setup terraform credentials
-          command: |
-            mkdir ~/.terraform.d
-            echo "{\"credentials\": { \"app.terraform.io\": { \"token\": \"$TERRAFORM_TOKEN\"}}}" > ~/.terraform.d/credentials.tfrc.json
-  tfnotify-install:
-    parameters:
-      tfnotify-url:
-        default: https://github.com/mercari/tfnotify/releases/download
-        type: string
-      tfnotify-version:
-        default: v0.7.5
-        type: string
-    steps:
-      - run:
-          command: |
-            wget << parameters.tfnotify-url >>/<< parameters.tfnotify-version >>/tfnotify_linux_amd64.tar.gz
-            mkdir -v tfnotify_linux_amd64
-            tar -xzvf tfnotify_linux_amd64.tar.gz -C tfnotify_linux_amd64
-            mv -v tfnotify_linux_amd64/tfnotify /usr/local/bin/tfnotify
-            rm -vrf tfnotify_linux_amd64*
-          name: tfnotify install
-
-executors:
-  terraform:
-    working_directory: ~/repo
-    docker:
-      - image: hashicorp/terraform:1.3.6
-
-jobs:
-  terraform-apply:
-    executor: terraform
-    steps:
-      - restore_cache:
-          key: terraform-{{ .Environment.CIRCLE_SHA1 }}
-      - setup_terraform_credentials
-      - run:
-          working_directory: terraform
-          name: terraform apply
-          command: |
-            terraform apply -auto-approve
-
-  terraform-plan:
-    executor: terraform
-    steps:
-      - checkout
-      - setup_terraform_credentials
-      - tfnotify-install
-      - run:
-          name: terraform plan and notify
-          working_directory: terraform
-          command: |
-            terraform init
-            terraform plan | tfnotify plan --title "## Plan result"
-      - save_cache:
-          key: terraform-{{ .Environment.CIRCLE_SHA1 }}
-          paths:
-            - ~/repo
 
 workflows:
-  deploy_infrastructure:
+  generate-config:
     jobs:
-      - terraform-plan:
-          context: terraform
-      - hold-terraform-apply:
-          type: approval
-          requires:
-            - terraform-plan
-      - terraform-apply:
-         context: terraform
-         requires:
-           - terraform-plan
-           - hold-terraform-apply
-         filters:
-           branches:
-             only:
-               - master
+      - path-filtering/filter:
+          base-revision: master
+          config-path: .circleci/continue-terraform.yml
+          mapping: |
+            terraform/.* build-code true
