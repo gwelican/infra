@@ -6,7 +6,7 @@ terraform {
     organization = "gwelican"
 
     workspaces {
-      name = "infra"
+      name = "cf-infra"
     }
 
   }

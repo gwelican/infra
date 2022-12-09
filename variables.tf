@@ -13,7 +13,7 @@ variable "gwelican_zoneid" {
   type    = string
 }
 
-#variable "pankapeti-zoneid" {
+#variable "pankapeti_zoneid" {
 #  default = ""
 #  type = string
 #}
