@@ -11,6 +11,23 @@ commands:
           command: |
             mkdir ~/.terraform.d
             echo "{\"credentials\": { \"app.terraform.io\": { \"token\": \"$TERRAFORM_TOKEN\"}}}" > ~/.terraform.d/credentials.tfrc.json
+  tfnotify-install:
+    parameters:
+      tfnotify-url:
+        default: https://github.com/mercari/tfnotify/releases/download
+        type: string
+      tfnotify-version:
+        default: v0.7.5
+        type: string
+    steps:
+      - run:
+          command: |
+            wget << parameters.tfnotify-url >>/<< parameters.tfnotify-version >>/tfnotify_linux_amd64.tar.gz
+            mkdir -v tfnotify_linux_amd64
+            tar -xzvf tfnotify_linux_amd64.tar.gz -C tfnotify_linux_amd64
+            mv -v tfnotify_linux_amd64/tfnotify /usr/local/bin/tfnotify
+            rm -vrf tfnotify_linux_amd64*
+          name: tfnotify install
 
 executors:
   terraform:
@@ -36,13 +53,14 @@ jobs:
     steps:
       - checkout
       - setup_terraform_credentials
+      - tfnotify-install
       - run:
           name: terraform plan and notify
           command: |
-            ls -l
-            cat ~/.terraform.d/credentials.tfrc.json
+            
+            env
             terraform init
-            terraform plan | ../.circleci/bin/tfnotify plan
+            terraform plan | tfnotify plan --title "## Plan result"
       - save_cache:
           key: terraform-{{ .Environment.CIRCLE_SHA1 }}
           paths:
