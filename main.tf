@@ -1,11 +1,15 @@
 terraform {
 
-  backend "s3" {
-    bucket = "gwelican-terraform"
-    key    = "infra/terraform.tfstate"
-    region = "us-west-2"
-  }
+  required_version = ">= 0.14.0"
 
+  cloud {
+    organization = "gwelican"
+
+    workspaces {
+      name = "infra"
+    }
+
+  }
   required_providers {
     cloudflare = {
       source  = "cloudflare/cloudflare"
@@ -16,11 +20,6 @@ terraform {
 
 provider "cloudflare" {
   api_key = var.cf_api_key
-  email = var.cf_email
-}
-
-provider "aws" {
-  access_key = var.aws_access_key
-  secret_key = var.aws_secret_key
+  email   = var.cf_email
 }
 
