@@ -7,6 +7,9 @@ parameters:
   terraform:
     type: boolean
     default: false
+  ansible:
+    type: boolean
+    default: false
 
 commands:
   setup_terraform_credentials:
@@ -35,12 +38,22 @@ commands:
           name: tfnotify install
 
 executors:
+  ansible:
+    working_directory: ~/repo
+    docker:
+      - image: ansible/ansible:default
   terraform:
     working_directory: ~/repo
     docker:
       - image: hashicorp/terraform:1.3.6
 
 jobs:
+  ansible-playbook:
+    executor: ansible
+    steps:
+      - run:
+          command: ansible-playbook -i hosts metrics.yml
+
   terraform-apply:
     executor: terraform
     steps:
@@ -71,7 +84,12 @@ jobs:
             - ~/repo
 
 workflows:
-  deploy_infrastructure:
+  ansible:
+    when: << pipeline.parameters.ansible >>
+    jobs:
+      - ansible-playbook:
+          context: ansible
+  cloudflare:
     when: << pipeline.parameters.terraform >>
     jobs:
       - terraform-plan:

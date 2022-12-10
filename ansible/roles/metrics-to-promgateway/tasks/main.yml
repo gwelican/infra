@@ -1,0 +1,50 @@
+---
+- name: install curl
+  ansible.builtin.package:
+    name: curl
+    state: present
+
+# - name: Add metrics cron
+#   ansible.builtin.cron:
+#     name: "node_exporter_cron"
+#     minute: "*"
+#     job: "curl -s localhost:{{ node_exporter_port | 9100 }}/metrics | curl --data-binary @- https://pushgateway.gwelican.eu/metrics/job/node-exporter/instance/firestorm"
+- name: install dump-metrics.sh
+  ansible.builtin.template:
+    src: dump-metrics.sh
+    dest: /root/dump-metrics.sh
+    owner: root
+    group: root
+    mode: '744'
+
+- name: install systemd service
+  ansible.builtin.template:
+    src: systemd-service.j2
+    dest: /etc/systemd/system/metrics.service
+    owner: root
+    group: root
+    mode: '0644'
+  notify: "systemd reload"
+
+- name: install systemd timer
+  ansible.builtin.template:
+    src: systemd-timer.j2
+    dest: /etc/systemd/system/metrics.timer
+    owner: root
+    group: root
+    mode: '0644'
+  notify: "systemd reload"
+
+- name: enable systemd service
+  ansible.builtin.systemd:
+    state: started
+    name: metrics.service
+    enabled: yes
+  notify: "systemd reload"
+
+- name: enable systemd timer
+  ansible.builtin.systemd:
+    state: started
+    name: metrics.timer
+    enabled: yes
+  notify: "systemd reload"

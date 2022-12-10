@@ -1,0 +1,2 @@
+node_exporter_port: 9100
+pushgateway_url: https://pushgateway.gwelican.eu

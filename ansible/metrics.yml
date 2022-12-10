@@ -1,0 +1,9 @@
+---
+- hosts: metrics
+  become: yes
+  become_method: sudo
+  become_user: root
+  gather_facts: yes
+  connection: ssh
+  roles:
+    - role: metrics-to-promgateway

@@ -12,3 +12,4 @@ workflows:
           base-revision: master
           mapping: |
             terraform/.* terraform true
+            ansible/.* ansible true
