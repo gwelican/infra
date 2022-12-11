@@ -48,6 +48,13 @@ executors:
       - image: hashicorp/terraform:1.3.6
 
 jobs:
+  ansible-test:
+    executor: ansible
+    steps:
+      - run:
+          working_directory: ansible
+          command: molecule test
+
   ansible-playbook:
     executor: ansible
     steps:
@@ -84,11 +91,19 @@ jobs:
             - ~/repo
 
 workflows:
-  ansible:
+  ansible-test:
     when: << pipeline.parameters.ansible >>
     jobs:
-      - ansible-playbook:
-          context: ansible
+      - ansible-test:
+#  ansible:
+#    when: << pipeline.parameters.ansible >>
+#    jobs:
+#      - ansible-playbook:
+#          context: ansible
+#        filters:
+#          branches:
+#            only:
+#              - master
   cloudflare:
     when: << pipeline.parameters.terraform >>
     jobs:
