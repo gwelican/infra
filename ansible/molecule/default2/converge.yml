@@ -1,0 +1,8 @@
+---
+- name: Converge
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: "Provision metrics_to_promgateway"
+      include_role:
+        name: "metrics_to_promgateway"

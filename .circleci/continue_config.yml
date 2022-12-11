@@ -9,7 +9,7 @@ parameters:
     default: false
   ansible:
     type: boolean
-    default: false
+    default: true
 
 commands:
   setup_terraform_credentials:
@@ -38,6 +38,10 @@ commands:
           name: tfnotify install
 
 executors:
+  molecule:
+    working_directory: ~/repo
+    docker:
+      - image: python:3-slim
   ansible:
     working_directory: ~/repo
     docker:
@@ -49,11 +53,31 @@ executors:
 
 jobs:
   ansible-test:
-    executor: ansible
+    parallelism: 2
+    machine:
+      image: ubuntu-2004:202101-01
     steps:
+      - checkout
+      - restore_cache:
+          key: &deps1-cache pip-{{ .Branch }}-{{ checksum "ansible/requirements.txt" }}
+      - run:
+          command: |
+            python3 -m venv venv
+            . venv/bin/activate
+            pip install -r requirements.txt
+          working_directory: ansible
+      - save_cache:
+          key: *deps1-cache
+          paths:
+            - "ansible/venv"
       - run:
           working_directory: ansible
-          command: molecule test
+          command: |
+            . venv/bin/activate
+            echo $(circleci tests glob "molecule/*/molecule.yml" | sed -re's/\/molecule.yml//' | sed -re's/molecule\///')
+            TEST=$(circleci tests glob "molecule/*/molecule.yml" | sed -re's/\/molecule.yml//' | sed -re's/molecule\///' | circleci tests split --split-by=timings)
+            echo "Running $TEST"
+            molecule test -s $TEST
 
   ansible-playbook:
     executor: ansible
@@ -94,7 +118,7 @@ workflows:
   ansible-test:
     when: << pipeline.parameters.ansible >>
     jobs:
-      - ansible-test:
+      - ansible-test
 #  ansible:
 #    when: << pipeline.parameters.ansible >>
 #    jobs:
